@@ -1,12 +1,25 @@
-let registrosBD = [];
-let chartInstance;
+// --- NAVEGACIÓN SPA ---
+function irALAlmacen() {
+    document.getElementById("seccion-informativa").classList.add("hidden");
+    document.getElementById("seccion-gestion").classList.remove("hidden");
+    window.scrollTo(0, 0);
+}
 
-// DATOS BASADOS EN TUS PDFs
-const REGLAS_NEGOCIO = {
-    costoJornal: 300,
-    personalLote: 5,
-    costoLenaProporcional: 1500, // Basado en el lote de $9000
-    precioVentaBotella: 450
+function irAInformativa() {
+    document.getElementById("seccion-gestion").classList.add("hidden");
+    document.getElementById("seccion-informativa").classList.remove("hidden");
+    window.scrollTo(0, 0);
+}
+
+// --- LÓGICA DE NEGOCIO (DATOS PDF) ---
+let baseDeDatos = [];
+let chartRef;
+
+const COSTOS_FIJOS = {
+    jornal: 300,
+    empleados: 5,
+    lenaPorLote: 1500, // Proporción de los $9000
+    ventaPromedio: 450
 };
 
 function registrarOperacion() {
@@ -15,30 +28,25 @@ function registrarOperacion() {
     const botellas = document.getElementById("input-botellas").value;
 
     if (!kg || !botellas) {
-        alert("⚠️ Datos incompletos");
+        alert("⚠️ Completa los datos");
         return;
     }
 
-    // Cálculos Financieros
-    const ingresoTotal = botellas * REGLAS_NEGOCIO.precioVentaBotella;
-    const costoTotal = REGLAS_NEGOCIO.costoLenaProporcional + (REGLAS_NEGOCIO.costoJornal * REGLAS_NEGOCIO.personalLote);
+    const ingresos = parseInt(botellas) * COSTOS_FIJOS.ventaPromedio;
+    const costos = COSTOS_FIJOS.lenaPorLote + (COSTOS_FIJOS.jornal * COSTOS_FIJOS.empleados);
 
-    const data = {
-        id: registrosBD.length + 1,
+    baseDeDatos.push({
+        id: baseDeDatos.length + 1,
         variedad: variedad === 'espadin' ? 'Espadín' : 'Silvestre',
         peso: kg,
-        unidades: parseInt(botellas),
-        ingreso: ingresoTotal,
-        costo: costoTotal
-    };
+        unidades: botellas,
+        ingreso: ingresos,
+        costo: costos
+    });
 
-    registrosBD.push(data);
-
-    // Notificación
-    const status = document.getElementById("status-msg");
-    status.innerHTML = `<p style="color: var(--primary); font-size: 0.8rem; margin-top:10px">✔ Registro #${data.id} guardado</p>`;
+    const fb = document.getElementById("feedback-operacion");
+    fb.innerHTML = `<p style="color:var(--primary); font-size:0.8rem; margin-top:10px;">✔ Lote #${baseDeDatos.length} guardado</p>`;
     
-    // Reset inputs
     document.getElementById("input-kg").value = "";
     document.getElementById("input-botellas").value = "";
 
@@ -48,74 +56,63 @@ function registrarOperacion() {
 function gestionarAcceso() {
     const rol = document.getElementById("rolSelect").value;
     const admin = document.getElementById("seccion-admin");
-    const tit = document.getElementById("header-title");
-    const desc = document.getElementById("header-desc");
-
+    
     if (rol === "supervisor") {
         admin.classList.remove("hidden");
-        tit.innerText = "Panel Administrativo";
-        desc.innerText = "Análisis financiero y balance de producción.";
         actualizarDashboard();
     } else {
         admin.classList.add("hidden");
-        tit.innerText = "Operaciones de Almacén";
-        desc.innerText = "Registro de entrada y control de producción.";
     }
 }
 
 function actualizarDashboard() {
-    let ingresosTotal = 0, gastosTotal = 0;
-    const tbody = document.getElementById("tabla-body");
-    tbody.innerHTML = "";
+    let tIng = 0, tCos = 0;
+    const tabla = document.getElementById("tabla-body");
+    tabla.innerHTML = "";
 
-    registrosBD.forEach(r => {
-        ingresosTotal += r.ingreso;
-        gastosTotal += r.costo;
-        const utilidad = r.ingreso - r.costo;
+    baseDeDatos.forEach(r => {
+        tIng += r.ingreso;
+        tCos += r.costo;
+        const ganancia = r.ingreso - r.costo;
 
-        tbody.innerHTML += `
+        tabla.innerHTML += `
             <tr>
                 <td>#${r.id}</td>
                 <td>${r.variedad}</td>
-                <td>${r.peso} kg</td>
-                <td>${r.unidades} u.</td>
-                <td class="${utilidad >= 0 ? 'txt-green' : 'txt-red'}">$${utilidad}</td>
+                <td>${r.peso}kg</td>
+                <td>${r.unidades}u.</td>
+                <td class="${ganancia >= 0 ? 'text-green' : 'text-red'}">$${ganancia}</td>
             </tr>`;
     });
 
-    // Actualizar KPIs
-    document.getElementById("ingresos-val").innerText = `$${ingresosTotal.toLocaleString()}`;
-    document.getElementById("costos-val").innerText = `$${gastosTotal.toLocaleString()}`;
-    
-    const balance = ingresosTotal - gastosTotal;
+    document.getElementById("ingresos-val").innerText = `$${tIng.toLocaleString()}`;
+    document.getElementById("costos-val").innerText = `$${tCos.toLocaleString()}`;
+    const bal = tIng - tCos;
     const balEl = document.getElementById("balance-val");
-    balEl.innerText = `$${balance.toLocaleString()}`;
-    balEl.className = balance >= 0 ? "txt-green" : "txt-red";
+    balEl.innerText = `$${bal.toLocaleString()}`;
+    balEl.className = bal >= 0 ? 'text-green' : 'text-red';
 
-    actualizarGrafico(ingresosTotal, gastosTotal);
+    renderGrafica(tIng, tCos);
 }
 
-function actualizarGrafico(i, g) {
-    const ctx = document.getElementById('graficaDonut').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
+function renderGrafica(i, c) {
+    const ctx = document.getElementById('graficaFinanciera').getContext('2d');
+    if (chartRef) chartRef.destroy();
 
-    chartInstance = new Chart(ctx, {
+    chartRef = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Ingresos', 'Gastos'],
+            labels: ['Ventas', 'Gastos'],
             datasets: [{
-                data: [i, g],
+                data: [i, c],
                 backgroundColor: ['#10b981', '#f43f5e'],
-                borderWidth: 0,
-                hoverOffset: 15
+                borderWidth: 0
             }]
         },
         options: {
             maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#9ca3af' } }
-            },
+            plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } },
             cutout: '75%'
         }
     });
-} 
+}  

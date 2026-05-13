@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agromaguey Pro | Investor & Management</title>
+    <link rel="stylesheet" href="Untitled-1.css">
+    <script src="chart.js"></script>
+</head>
+<body>
+
+    <div id="seccion-informativa">
+        <nav class="apple-nav">
+            <div class="nav-content">
+                <span class="logo">🌵 Agromaguey <span>Investor</span></span>
+                <button onclick="irALAlmacen()" class="btn-portal">Acceder al Portal →</button>
+            </div>
+        </nav>
+
+        <main class="apple-main">
+            <header class="hero-investor">
+                <h1>Transparencia en la cadena de valor.</h1>
+                <p>Problema Prototípico: Diagnóstico Estructural de Santa María Albarradas.</p>
+            </header>
+
+            <section class="apple-grid">
+                <div class="glass-card-light wide">
+                    <h2>Crisis de Asimetría de Información</h2>
+                    <p>La ausencia de registros sistematizados genera una vulnerabilidad del 32.50% en el patrimonio del productor frente a las heladas y sequías. La falta de datos impide una valuación real del maguey en crecimiento.</p>
+                </div>
+                <div class="glass-card-light">
+                    <h3>Trampa de Capital</h3>
+                    <p>Inmovilización de inversión por 8-10 años. Sin datos, el agricultor vende "a pie de parcela" a precios de liquidación.</p>
+                </div>
+                <div class="glass-card-light">
+                    <h3>Barreras de Entrada</h3>
+                    <p>Certificaciones de $13,000 MXN y requisitos del SAT crean una brecha insalvable para el pequeño productor.</p>
+                </div>
+                <div class="glass-card-light">
+                    <h3>Impacto Social</h3>
+                    <p>El 90% de la utilidad se queda en intermediarios debido a la falta de herramientas de gestión propias.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="seccion-gestion" class="hidden">
+        <div class="app-layout">
+            <aside class="sidebar">
+                <div class="brand">
+                    <h2>Agro<span>Pro</span></h2>
+                </div>
+                <div class="user-selector">
+                    <label>Nivel de Acceso</label>
+                    <select id="rolSelect" onchange="gestionarAcceso()">
+                        <option value="empleado">👤 Empleado</option>
+                        <option value="supervisor">🔑 Supervisor</option>
+                    </select>
+                </div>
+                <button onclick="irAInformativa()" class="btn-back">← Volver a Info</button>
+            </aside>
+
+            <main class="content">
+                <header class="content-header">
+                    <h2 id="header-title">Gestión de Almacén</h2>
+                    <p id="header-desc">Registro de producción y molienda.</p>
+                </header>
+
+                <div class="grid-main">
+                    <section class="card-modern">
+                        <h3>➕ Nuevo Lote</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Variedad de Maguey</label>
+                                <select id="tipo-agave">
+                                    <option value="espadin">Agave Espadín</option>
+                                    <option value="silvestre">Agave Silvestre</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Materia Prima (kg)</label>
+                                <input type="number" id="input-kg" placeholder="0.00">
+                            </div>
+                            <div class="input-group">
+                                <label>Producción (Botellas)</label>
+                                <input type="number" id="input-botellas" placeholder="0">
+                            </div>
+                        </div>
+                        <button class="btn-save" onclick="registrarOperacion()">Guardar en Sistema</button>
+                        <div id="feedback-operacion"></div>
+                    </section>
+
+                    <section id="seccion-admin" class="hidden">
+                        <div class="stats-row">
+                            <div class="stat-pill"><small>Ingresos</small><span id="ingresos-val" class="text-green">$0</span></div>
+                            <div class="stat-pill"><small>Costos</small><span id="costos-val" class="text-red">$0</span></div>
+                            <div class="stat-pill"><small>Balance</small><span id="balance-val">$0</span></div>
+                        </div>
+                        
+                        <div class="dashboard-visuals">
+                            <div class="card-modern chart-box">
+                                <h3>📈 Balance de Utilidad</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="graficaFinanciera"></canvas>
+                                </div>
+                            </div>
+                            <div class="card-modern table-box">
+                                <h3>📋 Historial Reciente</h3>
+                                <div class="table-responsive">
+                                    <table>
+                                        <thead>
+                                            <tr><th>ID</th><th>Tipo</th><th>Peso</th><th>Botellas</th><th>Margen</th></tr>
+                                        </thead>
+                                        <tbody id="tabla-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="const data.js"></script>
+</body>
+</html>
