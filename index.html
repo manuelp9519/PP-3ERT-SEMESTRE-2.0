@@ -13,7 +13,7 @@
         <nav class="apple-nav">
             <div class="nav-content">
                 <span class="logo">🌵 Agromaguey <span>Investor</span></span>
-                <button onclick="irAlWizard()" class="btn-portal">Acceder al Portal →</button>
+                <button id="btn-ir-wizard" class="btn-portal">Acceder al Portal →</button>
             </div>
         </nav>
 
@@ -68,13 +68,13 @@
                         <option value="con-palenque">🥃 Valor Agregado (Cultivo + Palenque)</option>
                     </select>
                 </div>
-                <button class="btn-save" style="grid-column: 1 / -1;" onclick="irPaso(2)">Siguiente Paso →</button>
+                <button id="btn-wizard-step1-next" class="btn-save" style="grid-column: 1 / -1;">Siguiente Paso →</button>
             </div>
 
             <div id="step-2" class="form-grid hidden">
                 <div class="input-group" style="grid-column: 1 / -1;">
                     <label>¿Cuál es el estado de la plantación?</label>
-                    <select id="w-estado" onchange="toggleTipoCosecha()">
+                    <select id="w-estado">
                         <option value="nueva">Proyecto desde cero (Nueva Siembra)</option>
                         <option value="activa">Ya tengo maguey plantado en crecimiento</option>
                     </select>
@@ -89,8 +89,8 @@
                 </div>
 
                 <div style="grid-column: 1 / -1; display: flex; gap: 10px;">
-                    <button class="btn-save" style="background: #333;" onclick="irPaso(1)">← Volver</button>
-                    <button class="btn-save" onclick="prepararPaso3()">Siguiente Paso →</button>
+                    <button id="btn-wizard-step2-back" class="btn-save" style="background: #333;">← Volver</button>
+                    <button id="btn-wizard-step2-next" class="btn-save">Siguiente Paso →</button>
                 </div>
             </div>
 
@@ -112,8 +112,8 @@
                 </div>
 
                 <div style="grid-column: 1 / -1; display: flex; gap: 10px;">
-                    <button class="btn-save" style="background: #333;" onclick="irPaso(2)">← Volver</button>
-                    <button class="btn-save" style="background: #10b981;" onclick="crearProyecto()">Generar Panel de Control 🚀</button>
+                    <button id="btn-wizard-step3-back" class="btn-save" style="background: #333;">← Volver</button>
+                    <button id="btn-wizard-crear-proyecto" class="btn-save" style="background: #10b981;">Generar Panel de Control 🚀</button>
                 </div>
             </div>
 
@@ -128,14 +128,14 @@
                     <h2 id="header-title" style="margin: 0; font-size: 2rem;">Cargando Panel...</h2>
                     <p id="header-desc" style="margin-top: 10px;">Análisis financiero activo.</p>
                 </div>
-                <button onclick="irAInformativa()" style="background: transparent; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s;">
+                <button id="btn-ir-informativa" style="background: transparent; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s;">
                     ← Volver a Inicio
                 </button>
             </header>
             
             <div class="grid-main">
                 <section id="seccion-admin">
-                    <div class="stats-row">
+                    <div class="stats-row stats-row-hero">
                         <div class="stat-pill"><small>Ingresos Esperados</small><span id="ingresos-val" class="text-green">$0</span></div>
                         <div class="stat-pill"><small>Costos Estimados</small><span id="costos-val" class="text-red">$0</span></div>
                         <div class="stat-pill"><small>Balance Neto Proyectado</small><span id="balance-val">$0</span></div>
@@ -162,7 +162,7 @@
 
                             <div id="vista-er" class="hidden" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                                 <div>
-                                    <button onclick="cerrarEstadoResultados()" style="background: transparent; border: 1px solid #333; color: var(--text-dim); padding: 6px 15px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; font-size: 0.85rem; transition: 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='var(--text-dim)'">
+                                    <button id="btn-cerrar-er" style="background: transparent; border: 1px solid #333; color: var(--text-dim); padding: 6px 15px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; font-size: 0.85rem; transition: 0.2s;">
                                         ← Volver al Inventario
                                     </button>
                                 </div>
@@ -196,6 +196,28 @@
                 </section>
             </div>
         </div>
+        
+        <div class="dashboard-card card-modern" style="margin-top: 20px; margin-bottom: 20px;">
+            <h3 style="margin-top: 0; color: white;">🏢 Estado de Resultados Global (Ajustado a Riesgo: 37.5%)</h3>
+            <div class="stats-row" style="margin-top: 15px;">
+                <div class="stat-pill">
+                    <small>Inversión Inicial (CAPEX)</small>
+                    <span id="kpi-capex" style="color: #3b82f6;">$0</span>
+                </div>
+                <div class="stat-pill">
+                    <small>Gasto Operativo (OPEX Acumulado)</small>
+                    <span id="kpi-opex" style="color: #f59e0b;">$0</span>
+                </div>
+                <div class="stat-pill">
+                    <small>Flujo de Efectivo Neto (Libre)</small>
+                    <span id="kpi-flujo-neto">$0</span>
+                </div>
+                <div class="stat-pill" title="% de ingresos requeridos para cubrir costos totales">
+                    <small>Punto de Equilibrio Operativo</small>
+                    <span id="kpi-punto-equilibrio" style="font-weight: bold;">0%</span>
+                </div>
+            </div>
+        </div>
 
         <div class="dashboard-card card-modern microeconomia-section" style="margin-top: 20px;">
             <h3 style="margin-top: 0; color: white;">⚖️ Análisis de Excedentes y Punto de Equilibrio</h3>
@@ -220,9 +242,19 @@
             <div class="chart-container" style="position: relative; height: 350px; width: 100%;">
                 <canvas id="graficaExcedentes"></canvas>
             </div>
+
+            <div class="dashboard-card card-modern" style="margin-top: 20px;">
+            <h3 style="margin-top: 0; color: white;">🌦️ Probabilidad de Siniestro (Distribución Normal)</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 15px;">
+                Área roja representa temperaturas bajo 0°C (12% de probabilidad histórica de pérdida por heladas).
+            </p>
+            <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                <canvas id="graficaProbabilidad"></canvas>
+            </div>
+        </div>
         </div>
     </div>
     
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
