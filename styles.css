@@ -51,13 +51,73 @@ input, select { width: 100%; background: #0d1117; border: 1px solid #333; color:
 
 .table-responsive { width: 100%; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 500px; }
-th { text-align: left; color: var(--text-dim); padding-bottom: 12px; border-bottom: 1px solid #333; }
-td { padding: 15px 0; border-bottom: 1px solid #1e293b; }
+th { text-align: left; color: var(--text-dim); padding: 10px 12px 12px; border-bottom: 1px solid #333; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+td { padding: 16px 12px; border-bottom: 1px solid #1e293b; }
+tbody tr { transition: background-color 0.2s ease; }
+tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); }
 
 .text-green { color: var(--primary); }
 .text-red { color: var(--danger); }
 .hidden { display: none !important; }
 .chart-wrapper { height: 300px; }
+
+/* Animación de entrada para el Estado de Resultados Proforma */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+#vista-er:not(.hidden) {
+    animation: fadeIn 0.35s ease-out;
+}
+
+/* KPIs principales destacados (Ingresos, Costos, Balance) */
+.stats-row-hero .stat-pill span {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+.stats-row-hero .stat-pill small {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+}
+.stats-row-hero .stat-pill {
+    padding: 24px 20px;
+}
+
+/* Empty State del inventario */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 24px;
+    min-height: 220px;
+}
+.empty-state .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+.empty-state p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    max-width: 340px;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+.empty-state button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
 
 /* MEDIA QUERIES PARA PC */
 @media (min-width: 1024px) {
@@ -74,3 +134,9 @@ td { padding: 15px 0; border-bottom: 1px solid #1e293b; }
 .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--primary); border-color: var(--primary); }
 input:checked + .slider:before { transform: translateX(22px); }
+
+/* Hover puro para botón de cerrar Estado de Resultados */
+#btn-cerrar-er:hover {
+    color: white !important;
+    border-color: var(--primary) !important;
+}
